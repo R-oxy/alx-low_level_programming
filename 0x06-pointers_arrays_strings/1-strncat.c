@@ -1,0 +1,36 @@
+#include "main.h"
+#include <stdio.h>
+
+/**
+ * _strncat - Concatenates two strings, using at most n bytes from src.
+ * Appends the src string to the dest string, overwriting the terminating null byte
+ * at the end of dest, and then adds a terminating null byte.
+ * 
+ * @param dest Pointer to the destination string.
+ * @param src Pointer to the source string.
+ * @param n Maximum number of bytes to be used from src.
+ * 
+ * @return Pointer to the resulting string dest.
+ */
+char* _strncat(char* dest, char* src, int n)
+{
+	char* dest_end = dest;
+	int i = 0;
+
+	while (*dest_end != '\0')
+	{
+        	dest_end++;
+	}
+
+	while (i < n && *src != '\0')
+	{
+        	*dest_end = *src;
+		dest_end++;
+		src++;
+		i++;
+	}
+
+	*dest_end = '\0';
+	return (dest);
+}
+
