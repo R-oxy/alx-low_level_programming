@@ -1,0 +1,40 @@
+#include "main.h"
+
+/**
+ * infinite_add - Adds two numbers.
+ * @n1: First number to add.
+ * @n2: Second number to add.
+ * @r: Buffer to store the result.
+ * @size_r: Size of the buffer.
+ *
+ * Return: Pointer to the result or 0 if the result cannot be stored in r.
+ */
+char *infinite_add(char *n1, char *n2, char *r, int size_r)
+{
+	int len1 = strlen(n1);
+	int len2 = strlen(n2);
+
+	strrev(n1);
+	strrev(n2);
+	int carry = 0, i = 0;
+
+	while (i < len1 || i < len2 || carry)
+	{
+        	int sum = carry;
+		if (i < len1)
+			sum += n1[i] - '0';
+		if (i < len2)
+			sum += n2[i] - '0';
+
+		if (i >= size_r - 1 || sum > 9)
+			return 0;
+
+		r[i] = sum + '0';
+		carry = sum / 10;
+		i++;
+	}
+
+	strrev(r);
+
+	return r;
+}
