@@ -7,8 +7,6 @@
  * @ac: the number of arguments
  * @av: an array of strings containing the arguments
  *
- * This function concatenates all the arguments of a program into a single
- * string, separated by newlines. The resulting string is dynamically allocated.
  * Return: NULL if ac == 0 or av == NULL, or if memory allocation fails.
  */
 char *argstostr(int ac, char **av)
