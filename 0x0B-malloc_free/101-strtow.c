@@ -13,42 +13,41 @@ int word_len(char *str);
  */
 char **strtow(char *str)
 {
-        char **words;
-        int i, j, k, n;
+	char **words;
+	int i, j, k, n;
 
-        if (str == NULL || *str == '\0')
-                return (NULL);
+	if (str == NULL || *str == '\0')
+		return (NULL);
 
-        n = count_words(str);
-        if (n == 0)
-                return (NULL);
+	n = count_words(str);
+	if (n == 0)
+		return (NULL);
 
-        words = malloc((n + 1) * sizeof(char *));
-        if (words == NULL)
-                return (NULL);
+	words = malloc((n + 1) * sizeof(char *));
+	if (words == NULL)
+		return (NULL);
 
-        for (i = 0, j = 0; i < n; i++)
-        {
-                while (str[j] == ' ')
-                        j++;
+	for (i = 0, j = 0; i < n; i++)
+	{
+		while (str[j] == ' ')
+			j++;
 
-                k = word_len(&str[j]);
-                words[i] = malloc((k + 1) * sizeof(char));
-                if (words[i] == NULL)
-                {
-                        for (i--; i >= 0; i--)
-                                free(words[i]);
-                        free(words);
-                        return (NULL);
-                }
+		k = word_len(&str[j]);
+		words[i] = malloc((k + 1) * sizeof(char));
+		if (words[i] == NULL)
+		{
+                	for (i--; i >= 0; i--)
+                        	free(words[i]);
+			free(words);
+			return (NULL);
+		}
 
-                for (k = 0; str[j] != ' ' && str[j] != '\0'; j++, k++)
-                        words[i][k] = str[j];
-                words[i][k] = '\0';
-        }
-
-        words[n] = NULL;
-        return (words);
+		for (k = 0; str[j] != ' ' && str[j] != '\0'; j++, k++)
+                	words[i][k] = str[j];
+		words[i][k] = '\0';
+	}
+	words[n] = NULL;
+	return (words);
 }
 
 /**
@@ -59,23 +58,23 @@ char **strtow(char *str)
  */
 int count_words(char *str)
 {
-        int count = 0;
+	int count = 0;
 
-        while (*str != '\0')
-        {
-                if (*str != ' ')
-                {
-                        count++;
-                        while (*str != ' ' && *str != '\0')
-                                str++;
-                }
-                else
-                {
-                        str++;
-                }
-        }
+	while (*str != '\0')
+	{
+		if (*str != ' ')
+		{
+			count++;
+			while (*str != ' ' && *str != '\0')
+                        	str++;
+		}
+		else
+		{
+			str++;
+		}
+	}
 
-        return (count);
+	return (count);
 }
 
 /**
@@ -86,13 +85,13 @@ int count_words(char *str)
  */
 int word_len(char *str)
 {
-        int len = 0;
+	int len = 0;
 
-        while (*str != ' ' && *str != '\0')
-        {
-                len++;
-                str++;
-        }
+	while (*str != ' ' && *str != '\0')
+	{
+		len++;
+		str++;
+	}
 
-        return (len);
+	return (len);
 }
