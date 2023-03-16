@@ -2,9 +2,7 @@
 #include <stdlib.h>
 
 /**
- * _calloc - Allocate memory for an array of nmemb elements of size bytes each,
- * and initialize the memory to zero.
- *
+ * _calloc - Allocate memory for an array.
  * @nmemb: Number of elements to allocate memory for
  * @size: Size of each element in bytes
  *
