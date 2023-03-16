@@ -8,7 +8,6 @@
  *
  * Return: Pointer to the allocated memory, or NULL
  */
-
 void *_calloc(unsigned int nmemb, unsigned int size)
 {
         void *ptr;
