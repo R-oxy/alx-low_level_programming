@@ -1,6 +1,5 @@
 #include "main.h"
 #include <stdlib.h>
-#include <stddef.h>
 
 /**
  * string_nconcat - Concatenates two strings s1 and s2, with the first n bytes of s2.
