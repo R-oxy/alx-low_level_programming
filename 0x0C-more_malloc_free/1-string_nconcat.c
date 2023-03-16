@@ -12,53 +12,42 @@
  */
 char *string_nconcat(char *s1, char *s2, unsigned int n)
 {
-        char *concatenated_string;
-        unsigned int len1, len2, i;
+	unsigned int i = 0, j = 0, k = 0, l = 0;
+	char *str;
 
-        if (s1 == NULL)
-        {
-                s1 = "";
-        }
+	if (s1 == NULL)
+		s1 = "";
+	if (s2 == NULL)
+		s2 = "";
 
-        if (s2 == NULL)
-        {
-                s2 = "";
-        }
+	while (s1[i])
+		i++;
 
-        len1 = 0;
-        while (s1[len1] != '\0')
-        {
-                len1++;
-        }
+	while (s2[k])
+		k++;
 
-        len2 = 0;
-        while (s2[len2] != '\0')
-        {
-                len2++;
-        }
+	if (n >= k)
+		l = i + k;
+	else
+		l = i + n;
 
-        if (n >= len2)
-        {
-                n = len2;
-        }
+	str = malloc(sizeof(char) * l + 1);
+	if (str == NULL)
+		return (NULL);
 
-        concatenated_string = malloc((len1 + n + 1) * sizeof(char));
-        if (concatenated_string == NULL)
-        {
-                exit(98);
-        }
+	k = 0;
+	while (j < l)
+	{
+		if (j <= i)
+			str[j] = s1[j];
 
-        for (i = 0; i < len1; i++)
-        {
-                concatenated_string[i] = s1[i];
-        }
-
-        for (i = 0; i < n; i++)
-        {
-                concatenated_string[len1 + i] = s2[i];
-        }
-
-        concatenated_string[len1 + n] = '\0';
-
-        return (concatenated_string);
+		if (j >= i)
+		{
+			str[j] = s2[k];
+			k++;
+		}
+		j++;
+	}
+	str[j] = '\0';
+	return (str);
 }
