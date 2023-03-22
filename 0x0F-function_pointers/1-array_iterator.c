@@ -5,7 +5,7 @@
  *
  * @array: Pointer to the first element of the array.
  * @size: The size of the array.
- * @action: Pointer to the function to be executed on each element of the array.
+ * @action: Pointer to the function
  *
  * Return: Nothing.
  */
