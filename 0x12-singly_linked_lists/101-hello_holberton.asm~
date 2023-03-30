@@ -1,0 +1,13 @@
+section .data
+	message db 'Hello, Holberton', 0x0A, 0x00
+
+section .text
+global main
+
+main:
+	mov rdi, message  ; set the first argument of printf to the message string
+	xor esi, esi      ; set the second argument of printf to 0 (no format specifiers)
+	mov eax, 0        ; set the return value to 0
+	call printf       ; call the printf function to print the message
+	mov eax, 0        ; set the return value to 0 (optional, since the program will exit anyway)
+	ret               ; exit the program
