@@ -3,38 +3,32 @@
 #include <stdio.h>
 
 /**
- * find_listint_loop - Finds the loop in a linked list.
- * @head: Pointer to the head of the linked list.
+ * free_listint_safe - Frees a listint_t linked list.
+ * @h: A pointer to the head node of the list.
  *
- * Return: address of node where loop starts/NULL for no loop.
+ * Return: The size of the list that was freed.
  */
-listint_t *find_listint_loop(listint_t *head)
+size_t free_listint_safe(listint_t **h)
 {
-    listint_t *tortoise, *hare;
+    size_t count = 0;
+    listint_t *tmp;
 
-    if (head == NULL)
-        return (NULL);
+    if (!h || !*h)
+        return (count);
 
-    tortoise = hare = head;
-
-    while (hare && hare->next)
+    while (*h)
     {
-        tortoise = tortoise->next;
-        hare = hare->next->next;
-
-        if (tortoise == hare)
+        count++;
+        if ((*h)->next >= *h)
         {
-            tortoise = head;
-
-            while (tortoise != hare)
-            {
-                tortoise = tortoise->next;
-                hare = hare->next;
-            }
-
-            return (tortoise);
+            free(*h);
+            *h = NULL;
+            break;
         }
+        tmp = (*h)->next;
+        free(*h);
+        *h = tmp;
     }
 
-    return (NULL);
+    return (count);
 }
