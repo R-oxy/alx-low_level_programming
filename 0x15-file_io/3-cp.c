@@ -1,84 +1,130 @@
 #include "main.h"
 
-#define BUF_SIZE 1024
+#define BUFFER_SIZE 1024
 
 /**
- * copy_file - Copy the content of a file to another file
- * @file_from: the path of the source file
- * @file_to: the path of the destination file
+ * main - Entry point of the program
+ * @argc: Number of arguments
+ * @argv: Array of arguments
  *
- * Return: 0 on success, non-zero on failure
+ * Return: On success, return 0. On error, return a non-zero value
  */
-int copy_file(const char *file_from, const char *file_to)
+int main(int argc, char **argv)
 {
-        int fd_from, fd_to;
-        ssize_t bytes_read, bytes_written;
-        char buf[BUF_SIZE];
-        mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+	int status;
 
-        fd_from = open(file_from, O_RDONLY);
-        if (fd_from == -1)
+	if (argc != 3)
 	{
-                dprintf(STDERR_FILENO,
-                        "Error: Can't read from file %s\n", file_from);
-                return (98);
-        }
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		return (97);
+	}
 
-        fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, mode);
-        if (fd_to == -1)
-	{
-                dprintf(STDERR_FILENO,
-                        "Error: Can't write to file %s\n", file_to);
-                return (99);
-        }
+	status = copy_file(argv[1], argv[2]);
+	if (status)
+		return (status);
 
-        while ((bytes_read = read(fd_from, buf, BUF_SIZE)) > 0)
-	{
-                bytes_written = write(fd_to, buf, bytes_read);
-                if (bytes_written == -1 || bytes_written != bytes_read)
-		{
-                        dprintf(STDERR_FILENO,
-                                "Error: Can't write to file %s\n", file_to);
-                        return (99);
-                }
-        }
-
-        if (bytes_read == -1)
-	{
-                dprintf(STDERR_FILENO,
-                        "Error: Can't read from file %s\n", file_from);
-                return (98);
-        }
-
-        if (close(fd_from) == -1)
-	{
-                dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
-                return (100);
-        }
-
-        if (close(fd_to) == -1)
-	{
-                dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
-                return (100);
-        }
-
-        return (0);
+	return (0);
 }
 
 /**
- * main - Entry point, calls copy_file function
- * @argc: the number of arguments passed to the program
- * @argv: an array of strings containing the arguments
+ * open_files - Opens the source and destination files for copying.
+ * @file_from: The name of the source file.
+ * @file_to: The name of the destination file.
  *
- * Return: 0 on success, non-zero on failure
+ * Return: An array containing the file descriptors of the opened files.
+ *         The first element is the source file descriptor, and the second
+ *         element is the destination file descriptor.
  */
-int main(int argc, char *argv[])
+static int *open_files(const char *file_from, const char *file_to)
 {
-        if (argc != 3)
-	{
-                dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", argv[0]);
-                return (97);
-        }
+	int *fds = malloc(sizeof(int) * 2);
 
-        return (copy_file(argv[1], argv[2]));
+	if (fds == NULL)
+		return (NULL);
+
+	fds[0] = open(file_from, O_RDONLY);
+	if (fds[0] == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_from);
+		free(fds);
+		return (NULL);
+	}
+
+	fds[1] = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	if (fds[1] == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_to);
+		close(fds[0]);
+		free(fds);
+		return (NULL);
+	}
+
+	return (fds);
+}
+
+/**
+ * copy_data - Copies data from the source file to the destination file.
+ * @fd_from: The file descriptor of the source file.
+ * @fd_to: The file descriptor of the destination file.
+ *
+ * Return: 0 on success, non-zero on failure.
+ */
+static int copy_data(int fd_from, int fd_to)
+{
+	int read_status, write_status;
+	char buffer[BUFFER_SIZE];
+
+	while ((read_status = read(fd_from, buffer, BUFFER_SIZE)) > 0)
+	{
+		write_status = write(fd_to, buffer, read_status);
+		if (write_status != read_status)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't write to file descriptor %d\n", fd_to);
+			return (EXIT_FAILURE);
+		}
+	}
+
+	if (read_status == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Cant read frm file descriptor %d\n", fd_from);
+		return (EXIT_FAILURE);
+	}
+
+	return (EXIT_SUCCESS);
+}
+
+/**
+ * close_files - Closes the file descriptors of the opened files.
+ * @fds: An array containing the file descriptors of the opened files.
+ *
+ * Return: 0 on success, or -1 on failure.
+ */
+static void close_files(int *fds)
+{
+	close(fds[0]);
+	close(fds[1]);
+	free(fds);
+}
+
+/**
+ * copy_file - Copies the content of one file to another.
+ * @file_from: The name of the source file.
+ * @file_to: The name of the destination file.
+ *
+ * Return: 0 on success, non-zero on failure.
+ */
+int copy_file(const char *file_from, const char *file_to)
+{
+	int *fds;
+	int status;
+
+	fds = open_files(file_from, file_to);
+	if (fds == NULL)
+		return (EXIT_FAILURE);
+
+	status = copy_data(fds[0], fds[1]);
+
+	close_files(fds);
+
+	return (status);
 }
