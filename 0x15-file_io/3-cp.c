@@ -1,5 +1,9 @@
 #include "main.h"
 
+static int *open_files(const char *file_from, const char *file_to);
+static int copy_data(int fd_from, int fd_to);
+static void close_files(int *fds);
+
 #define BUFFER_SIZE 1024
 
 /**
